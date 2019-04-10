@@ -20,24 +20,35 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import webapi.model.ApiError;
 
 
-public class AuthLogout {
+public class LoginResponse {
 
+    private LoginData data;
     private ApiError error;
     private boolean success;
 
     /**
      * No args constructor for use in serialization
      */
-    public AuthLogout() {
+    public LoginResponse() {
     }
 
     /**
+     * @param data
      * @param success
      */
-    public AuthLogout(ApiError error, boolean success) {
+    public LoginResponse(LoginData data, ApiError error, boolean success) {
         super();
+        this.data = data;
         this.error = error;
         this.success = success;
+    }
+
+    public LoginData getData() {
+        return data;
+    }
+
+    public void setData(LoginData data) {
+        this.data = data;
     }
 
     public ApiError getError() {
@@ -58,7 +69,8 @@ public class AuthLogout {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("error", error)
+        return new ToStringBuilder(this).append("data", data)
+                .append("error", error)
                 .append("success", success).toString();
     }
 

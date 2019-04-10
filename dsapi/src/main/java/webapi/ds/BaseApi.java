@@ -16,12 +16,14 @@
 
 package webapi.ds;
 
-import webapi.model.auth.AuthLogin;
-import webapi.model.auth.AuthLogout;
-import webapi.model.info.ApiInfo;
-import webapi.model.info.DsApi;
+import webapi.model.auth.LoginResponse;
+import webapi.model.auth.LogoutResponse;
+import webapi.model.info.InfoResponse;
+import webapi.model.info.ApiDesc;
+import webapi.net.AsyncCallback;
 import webapi.net.ClientException;
-import webapi.net.HttpClientAdapter;
+import webapi.net.ClientAdapter;
+import webapi.net.UriAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -32,11 +34,11 @@ import java.util.Map;
  */
 public class BaseApi implements ApiContract {
 
-    private UriBuilder uriBuilder;
-    private HttpClientAdapter httpClient;
+    private UriAdapter uriAdapter;
+    private ClientAdapter httpClient;
 
-    public BaseApi(UriBuilder uriBuilder, HttpClientAdapter httpClient) {
-        this.uriBuilder = uriBuilder;
+    public BaseApi(UriAdapter uriAdapter, ClientAdapter httpClient) {
+        this.uriAdapter = uriAdapter;
         this.httpClient = httpClient;
     }
 
@@ -48,17 +50,17 @@ public class BaseApi implements ApiContract {
      * @throws ClientException when an error occurred while accessing the DiskStation
      * @throws ApiException    is thrown when the request was not successful
      */
-    public List<DsApi> apiInfo() throws ClientException, ApiException {
-        String uri = uriBuilder.getUri(INFO_CGI, INFO_API,
+    public List<ApiDesc> apiInfo() throws ClientException, ApiException {
+        String uri = uriAdapter.getUri(INFO_CGI, INFO_API,
                 INFO_VERSION, INFO_METHOD,
                 Map.of(INFO_PARAM_QUERY, INFO_PARAM_QUERY_VALUE));
-        ApiInfo apiInfo = httpClient.executeRequest(uri, ApiInfo.class);
+        InfoResponse infoResponse = httpClient.executeRequest(uri, InfoResponse.class);
 
-        if (!apiInfo.isSuccess()) {
-            throw new ApiException(ApiErrorParser.parseCommonError(apiInfo.getError().getCode()));
+        if (!infoResponse.isSuccess()) {
+            throw new ApiException(ApiErrorParser.parseCommonError(infoResponse.getError().getCode()));
         }
 
-        return apiInfo.getData().getApiList();
+        return infoResponse.getData().getApiList();
     }
 
     /**
@@ -66,11 +68,11 @@ public class BaseApi implements ApiContract {
      *
      * @param responseCallback provides either an Api list or an exception
      */
-    public void apiInfo(ApiCallback<List<DsApi>> responseCallback) {
-        String uri = uriBuilder.getUri(INFO_CGI, INFO_API,
+    public void apiInfo(AsyncCallback<List<ApiDesc>> responseCallback) {
+        String uri = uriAdapter.getUri(INFO_CGI, INFO_API,
                 INFO_VERSION, INFO_METHOD,
                 Map.of(INFO_PARAM_QUERY, INFO_PARAM_QUERY_VALUE));
-        httpClient.executeRequestAsync(uri, ApiInfo.class,
+        httpClient.executeRequestAsync(uri, InfoResponse.class,
                 response -> response.getData().getApiList(), responseCallback);
     }
 
@@ -85,22 +87,22 @@ public class BaseApi implements ApiContract {
      * @throws ApiException    is thrown when the request was not successful
      */
     public String login(String account, String passwd, String session) throws ClientException, ApiException {
-        String uri = uriBuilder.getUri(AUTH_CGI, AUTH_API,
+        String uri = uriAdapter.getUri(AUTH_CGI, AUTH_API,
                 AUTH_LOGIN_VERSION, AUTH_LOGIN_METHOD,
                 Map.of(AUTH_PARAM_ACCOUNT, account,
                         AUTH_PARAM_PASSWD, passwd,
                         AUTH_PARAM_SESSION, session,
                         AUTH_PARAM_FORMAT, AUTH_PARAM_FORMAT_VALUE));
-        AuthLogin authLogin = httpClient.executeRequest(uri, AuthLogin.class);
+        LoginResponse loginResponse = httpClient.executeRequest(uri, LoginResponse.class);
 
-        if (!authLogin.isSuccess()) {
-            int errorCode = authLogin.getError().getCode();
+        if (!loginResponse.isSuccess()) {
+            int errorCode = loginResponse.getError().getCode();
             String desc = ApiErrorParser.isCommonError(errorCode) ?
                     ApiErrorParser.parseCommonError(errorCode) : ApiErrorParser.parseAuthError(errorCode);
             throw new ApiException(desc);
         }
 
-        return authLogin.getData().getSid();
+        return loginResponse.getData().getSid();
     }
 
     /**
@@ -111,14 +113,14 @@ public class BaseApi implements ApiContract {
      * @param session  session name
      * @param callback provides either a session id or an exception
      */
-    public void login(String account, String passwd, String session, ApiCallback<String> callback) {
-        String uri = uriBuilder.getUri(AUTH_CGI, AUTH_API,
+    public void login(String account, String passwd, String session, AsyncCallback<String> callback) {
+        String uri = uriAdapter.getUri(AUTH_CGI, AUTH_API,
                 AUTH_LOGIN_VERSION, AUTH_LOGIN_METHOD,
                 Map.of(AUTH_PARAM_ACCOUNT, account,
                         AUTH_PARAM_PASSWD, passwd,
                         AUTH_PARAM_SESSION, session,
                         AUTH_PARAM_FORMAT, AUTH_PARAM_FORMAT_VALUE));
-        httpClient.executeRequestAsync(uri, AuthLogin.class,
+        httpClient.executeRequestAsync(uri, LoginResponse.class,
                 response -> response.getData().getSid(), callback);
     }
 
@@ -131,13 +133,13 @@ public class BaseApi implements ApiContract {
      * @throws ApiException    is thrown when the request was not successful
      */
     public boolean logout(String session) throws ClientException, ApiException {
-        String uri = uriBuilder.getUri(AUTH_CGI, AUTH_API,
+        String uri = uriAdapter.getUri(AUTH_CGI, AUTH_API,
                 AUTH_LOGOUT_VERSION, AUTH_LOGOUT_METHOD,
                 Map.of(AUTH_PARAM_SESSION, session));
-        AuthLogout authLogout = httpClient.executeRequest(uri, AuthLogout.class);
+        LogoutResponse logoutResponse = httpClient.executeRequest(uri, LogoutResponse.class);
 
-        if (!authLogout.isSuccess()) {
-            int errorCode = authLogout.getError().getCode();
+        if (!logoutResponse.isSuccess()) {
+            int errorCode = logoutResponse.getError().getCode();
             String desc = ApiErrorParser.isCommonError(errorCode) ?
                     ApiErrorParser.parseCommonError(errorCode) : ApiErrorParser.parseAuthError(errorCode);
             throw new ApiException(desc);
@@ -152,26 +154,26 @@ public class BaseApi implements ApiContract {
      * @param session  session name
      * @param callback provides either an empty response when successful or an exception
      */
-    public void logout(String session, ApiCallback<Void> callback) {
-        String uri = uriBuilder.getUri(AUTH_CGI, AUTH_API,
+    public void logout(String session, AsyncCallback<Void> callback) {
+        String uri = uriAdapter.getUri(AUTH_CGI, AUTH_API,
                 AUTH_LOGOUT_VERSION, AUTH_LOGOUT_METHOD,
                 Map.of(AUTH_PARAM_SESSION, session));
-        httpClient.executeRequestAsync(uri, AuthLogout.class, response -> null, callback);
+        httpClient.executeRequestAsync(uri, LogoutResponse.class, response -> null, callback);
     }
 
-    public UriBuilder getUriBuilder() {
-        return uriBuilder;
+    public UriAdapter getUriAdapter() {
+        return uriAdapter;
     }
 
-    public void setUriBuilder(UriBuilder uriBuilder) {
-        this.uriBuilder = uriBuilder;
+    public void setUriAdapter(UriAdapter uriAdapter) {
+        this.uriAdapter = uriAdapter;
     }
 
-    public HttpClientAdapter getHttpClient() {
+    public ClientAdapter getClientAdapter() {
         return httpClient;
     }
 
-    public void setHttpClient(HttpClientAdapter httpClient) {
+    public void setClientAdapter(ClientAdapter httpClient) {
         this.httpClient = httpClient;
     }
 }

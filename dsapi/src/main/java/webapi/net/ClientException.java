@@ -17,7 +17,7 @@
 package webapi.net;
 
 /**
- * This Exception wraps all the exceptions inside the {@link HttpClientAdapter} and provides an
+ * This Exception wraps all the exceptions inside the {@link ClientAdapter} and provides an
  * error code from {@link ClientErrorContract}.
  */
 public final class ClientException extends Exception {

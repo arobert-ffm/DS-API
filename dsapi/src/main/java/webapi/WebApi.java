@@ -16,8 +16,8 @@
 
 package webapi;
 
-import webapi.ds.UriBuilder;
-import webapi.net.HttpClientAdapter;
+import webapi.net.UriAdapter;
+import webapi.net.ClientAdapter;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -25,11 +25,12 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Assists in initialization of the Web Api.
  * todo add 2-step verification
+ * todo log4j (Okhttp http://square.github.io/okhttp/3.x/logging-interceptor/)
  */
 public final class WebApi {
 
-    private UriBuilder uriBuilder;
-    private HttpClientAdapter httpClient;
+    private UriAdapter uriAdapter;
+    private ClientAdapter httpClient;
 
     private GetApi getApi;
 
@@ -44,25 +45,25 @@ public final class WebApi {
      * @throws NoSuchAlgorithmException is called when the TLS initialization failed
      */
     public WebApi(String host, String port, boolean ssl) throws KeyManagementException, NoSuchAlgorithmException {
-        uriBuilder = new UriBuilder(host, port, ssl);
-        httpClient = new HttpClientAdapter();
+        uriAdapter = new UriAdapter(host, port, ssl);
+        httpClient = new ClientAdapter();
 
-        getApi = new GetApi(uriBuilder, httpClient);
+        getApi = new GetApi(uriAdapter, httpClient);
     }
 
-    public UriBuilder getUriBuilder() {
-        return uriBuilder;
+    public UriAdapter getUriAdapter() {
+        return uriAdapter;
     }
 
-    public void setUriBuilder(UriBuilder uriBuilder) {
-        this.uriBuilder = uriBuilder;
+    public void setUriAdapter(UriAdapter uriAdapter) {
+        this.uriAdapter = uriAdapter;
     }
 
-    public HttpClientAdapter getHttpClient() {
+    public ClientAdapter getClientAdapter() {
         return httpClient;
     }
 
-    public void setHttpClient(HttpClientAdapter httpClient) {
+    public void setClientAdapter(ClientAdapter httpClient) {
         this.httpClient = httpClient;
     }
 

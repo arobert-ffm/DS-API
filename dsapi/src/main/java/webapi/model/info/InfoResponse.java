@@ -20,7 +20,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import webapi.model.ApiError;
 
 
-public class ApiInfo {
+public class InfoResponse {
 
     private InfoData data;
     private ApiError error;
@@ -29,7 +29,7 @@ public class ApiInfo {
     /**
      * No args constructor for use in serialization
      */
-    public ApiInfo() {
+    public InfoResponse() {
     }
 
     /**
@@ -37,7 +37,7 @@ public class ApiInfo {
      * @param data
      * @param success
      */
-    public ApiInfo(InfoData data, ApiError error, boolean success) {
+    public InfoResponse(InfoData data, ApiError error, boolean success) {
         super();
         this.data = data;
         this.error = error;

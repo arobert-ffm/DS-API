@@ -42,14 +42,14 @@ public class InfoDataDeserializer extends StdDeserializer<InfoData> {
 
         JsonNode node = parser.getCodec().readTree(parser);
 
-        List<DsApi> apis = new ArrayList<>();
-        DsApi api;
+        List<ApiDesc> apis = new ArrayList<>();
+        ApiDesc api;
 
         Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
         while (iterator.hasNext()) {
             Map.Entry<String, JsonNode> entry = iterator.next();
             JsonNode objNode = entry.getValue();
-            api = new DsApi(entry.getKey(),
+            api = new ApiDesc(entry.getKey(),
                     objNode.get("maxVersion").asInt(),
                     objNode.get("minVersion").asInt(),
                     objNode.get("path").asText());

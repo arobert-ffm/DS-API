@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import webapi.base.ParameterizedCallback;
-import webapi.ds.ApiCallback;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -34,7 +33,7 @@ import java.time.Duration;
 /**
  * A wrapper around the OkHttpClient to generalize the http request execution.
  */
-public final class HttpClientAdapter {
+public final class ClientAdapter {
 
     private final String httpError = "HTTP %d: %s";
 
@@ -45,7 +44,7 @@ public final class HttpClientAdapter {
      * @throws NoSuchAlgorithmException is called when TLS protocol is not supported
      * @throws KeyManagementException   is called when the TLS initialization failed
      */
-    public HttpClientAdapter() throws NoSuchAlgorithmException, KeyManagementException {
+    public ClientAdapter() throws NoSuchAlgorithmException, KeyManagementException {
         setClient(null);
         mapper = new ObjectMapper();
     }
@@ -73,15 +72,8 @@ public final class HttpClientAdapter {
                     ClientErrorContract.RESPONSE_NOT_SUCCESSFUL);
         }
 
-        String result;
         try {
-            result = response.body().string();
-        } catch (IOException e) {
-            throw new ClientException(e, ClientErrorContract.RESPONSE_RECEIVE);
-        }
-
-        try {
-            return mapper.readValue(result, type);
+            return mapper.readValue(response.body().byteStream(), type);
         } catch (IOException e) {
             throw new ClientException(e, ClientErrorContract.RESPONSE_PARSE);
         }
@@ -95,7 +87,7 @@ public final class HttpClientAdapter {
      * @param responseCallback provides either the response or an exception
      */
     public <T, S> void executeRequestAsync(String uri, Class<T> responseType,
-                                           ParameterizedCallback<T, S> mapCallback, ApiCallback<S> responseCallback) {
+                                           ParameterizedCallback<T, S> mapCallback, AsyncCallback<S> responseCallback) {
         client.newCall(uriToRequest(uri)).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -109,15 +101,8 @@ public final class HttpClientAdapter {
                             response.message()), ClientErrorContract.RESPONSE_NOT_SUCCESSFUL));
                 }
 
-                String result = null;
                 try {
-                    result = response.body().string();
-                } catch (IOException e) {
-                    responseCallback.onFailure(new ClientException(e, ClientErrorContract.RESPONSE_RECEIVE));
-                }
-
-                try {
-                    T value = mapper.readValue(result, responseType);
+                    T value = mapper.readValue(response.body().byteStream(), responseType);
                     S data = mapCallback.call(value);
                     responseCallback.onResponse(data);
                 } catch (IOException e) {

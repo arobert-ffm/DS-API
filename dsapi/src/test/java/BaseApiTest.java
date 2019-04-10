@@ -16,10 +16,10 @@
 
 import webapi.GetApi;
 import webapi.WebApi;
-import webapi.ds.ApiCallback;
+import webapi.net.AsyncCallback;
 import webapi.ds.ApiContract;
 import webapi.ds.ApiException;
-import webapi.model.info.DsApi;
+import webapi.model.info.ApiDesc;
 import webapi.net.ClientException;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * WebApi Test
  */
-public final class IntegrationTest {
+public final class BaseApiTest {
 
     /**
      * @param args 0: HOST
@@ -46,7 +46,7 @@ public final class IntegrationTest {
 
         // INFO
         try {
-            List<DsApi> apiList = getApi.apiInfo();
+            List<ApiDesc> apiList = getApi.apiInfo();
             System.out.println("Api count:\t" + apiList.size());
         } catch (ClientException e) {
             System.out.println(e.getCode().getErrorDesc());
@@ -55,7 +55,7 @@ public final class IntegrationTest {
             System.out.println(e.getDesc());
             e.printStackTrace();
         }
-        getApi.apiInfo(new ApiCallback<>() {
+        getApi.apiInfo(new AsyncCallback<>() {
             @Override
             public void onFailure(Exception e) {
                 if (e instanceof ClientException) {
@@ -67,7 +67,7 @@ public final class IntegrationTest {
             }
 
             @Override
-            public void onResponse(List<DsApi> response) {
+            public void onResponse(List<ApiDesc> response) {
                 System.out.println("Api count:\t" + response.size());
             }
         });
@@ -85,7 +85,7 @@ public final class IntegrationTest {
             System.out.println(e.getDesc());
             e.printStackTrace();
         }
-        getApi.login(args[3], args[4], ApiContract.DLS_PARAM_SESSION_VALUE, new ApiCallback<>() {
+        getApi.login(args[3], args[4], ApiContract.DLS_PARAM_SESSION_VALUE, new AsyncCallback<>() {
             @Override
             public void onFailure(Exception e) {
                 if (e instanceof ClientException) {
@@ -99,7 +99,7 @@ public final class IntegrationTest {
             @Override
             public void onResponse(String response) {
                 System.out.println("_sid:\t" + response);
-                getApi.logout(ApiContract.DLS_PARAM_SESSION_VALUE, new ApiCallback<>() {
+                getApi.logout(ApiContract.DLS_PARAM_SESSION_VALUE, new AsyncCallback<>() {
                     @Override
                     public void onFailure(Exception e) {
                         if (e instanceof ClientException) {

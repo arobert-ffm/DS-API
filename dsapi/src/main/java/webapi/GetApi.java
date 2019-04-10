@@ -17,16 +17,16 @@
 package webapi;
 
 import webapi.ds.BaseApi;
-import webapi.ds.UriBuilder;
-import webapi.net.HttpClientAdapter;
+import webapi.net.UriAdapter;
+import webapi.net.ClientAdapter;
 
 /**
  * Interface to access the Download Station Api.
  */
 public final class GetApi extends BaseApi {
 
-    public GetApi(UriBuilder uriBuilder, HttpClientAdapter httpClient) {
-        super(uriBuilder, httpClient);
+    public GetApi(UriAdapter uriAdapter, ClientAdapter httpClient) {
+        super(uriAdapter, httpClient);
     }
 
 }

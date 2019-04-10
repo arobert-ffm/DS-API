@@ -25,7 +25,7 @@ import java.util.List;
 @JsonDeserialize(using = InfoDataDeserializer.class)
 public class InfoData {
 
-    private List<DsApi> apiList = new ArrayList<>();
+    private List<ApiDesc> apiList = new ArrayList<>();
 
     /**
      * No args constructor for use in serialization
@@ -33,16 +33,16 @@ public class InfoData {
     public InfoData() {
     }
 
-    public InfoData(List<DsApi> apiList) {
+    public InfoData(List<ApiDesc> apiList) {
         this.apiList = apiList;
     }
 
 
-    public List<DsApi> getApiList() {
+    public List<ApiDesc> getApiList() {
         return apiList;
     }
 
-    public void setApiList(List<DsApi> apiList) {
+    public void setApiList(List<ApiDesc> apiList) {
         this.apiList = apiList;
     }
 

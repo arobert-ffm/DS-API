@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package webapi.ds;
+package webapi.net;
 
 import java.net.URI;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
  * <p>
  * When setting the {@code ssl} parameter, the {@code port} should also be updated.
  */
-public final class UriBuilder {
+public final class UriAdapter {
 
     // Default parameters
     private static final String SCHEME_HTTP = "http";
@@ -48,7 +48,7 @@ public final class UriBuilder {
      * @param port Port number
      * @param ssl  if true then SSL/TLS encryption is used
      */
-    public UriBuilder(String host, String port, boolean ssl) {
+    public UriAdapter(String host, String port, boolean ssl) {
         setSsl(ssl);
         setHost(host);
         setPort(port);

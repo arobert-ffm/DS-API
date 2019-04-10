@@ -19,7 +19,7 @@ package webapi.model.info;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 
-public class DsApi {
+public class ApiDesc {
 
     private String name;
     private int maxVersion;
@@ -30,7 +30,7 @@ public class DsApi {
     /**
      * No args constructor for use in serialization
      */
-    public DsApi() {
+    public ApiDesc() {
     }
 
     /**
@@ -40,7 +40,7 @@ public class DsApi {
      * @param path
      * @param requestFormat
      */
-    public DsApi(String name, int maxVersion, int minVersion, String path, String requestFormat) {
+    public ApiDesc(String name, int maxVersion, int minVersion, String path, String requestFormat) {
         super();
         this.name = name;
         this.maxVersion = maxVersion;
@@ -54,7 +54,7 @@ public class DsApi {
      * @param path
      * @param minVersion
      */
-    public DsApi(String name, int maxVersion, int minVersion, String path) {
+    public ApiDesc(String name, int maxVersion, int minVersion, String path) {
         this(name, maxVersion, minVersion, path, null);
     }
 

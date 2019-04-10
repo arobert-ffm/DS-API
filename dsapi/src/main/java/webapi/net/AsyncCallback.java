@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package webapi.ds;
+package webapi.net;
 
-import webapi.net.ClientException;
+import webapi.ds.ApiException;
 
 /**
  * This Callback is used for asynchronous Web Api requests.
  *
  * @param <T> The type of the argument provided to the {@code onResponse} method.
  */
-public interface ApiCallback<T> {
+public interface AsyncCallback<T> {
 
     /**
      * Called when the request is unsuccessful. The exception can be:
