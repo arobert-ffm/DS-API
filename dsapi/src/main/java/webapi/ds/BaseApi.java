@@ -18,11 +18,11 @@ package webapi.ds;
 
 import webapi.model.auth.LoginResponse;
 import webapi.model.auth.LogoutResponse;
-import webapi.model.info.InfoResponse;
 import webapi.model.info.ApiDesc;
+import webapi.model.info.InfoResponse;
 import webapi.net.AsyncCallback;
-import webapi.net.ClientException;
 import webapi.net.ClientAdapter;
+import webapi.net.ClientException;
 import webapi.net.UriAdapter;
 
 import java.util.List;

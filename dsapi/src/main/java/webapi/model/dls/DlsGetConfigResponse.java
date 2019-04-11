@@ -14,22 +14,33 @@
  * limitations under the License.
  */
 
-package webapi.model.auth;
+package webapi.model.dls;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import webapi.model.ApiError;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "data",
+        "error",
+        "success"
+})
+public class DlsGetConfigResponse {
 
-public class LoginResponse {
-
-    private LoginData data;
+    @JsonProperty("data")
+    private DlsConfig data;
+    @JsonProperty("error")
     private ApiError error;
+    @JsonProperty("success")
     private boolean success;
 
     /**
      * No args constructor for use in serialization
      */
-    public LoginResponse() {
+    public DlsGetConfigResponse() {
     }
 
     /**
@@ -37,18 +48,20 @@ public class LoginResponse {
      * @param error
      * @param success
      */
-    public LoginResponse(LoginData data, ApiError error, boolean success) {
+    public DlsGetConfigResponse(DlsConfig data, ApiError error, boolean success) {
         super();
         this.data = data;
         this.error = error;
         this.success = success;
     }
 
-    public LoginData getData() {
+    @JsonProperty("data")
+    public DlsConfig getData() {
         return data;
     }
 
-    public void setData(LoginData data) {
+    @JsonProperty("data")
+    public void setData(DlsConfig data) {
         this.data = data;
     }
 
@@ -60,18 +73,19 @@ public class LoginResponse {
         this.error = error;
     }
 
+    @JsonProperty("success")
     public boolean isSuccess() {
         return success;
     }
 
+    @JsonProperty("success")
     public void setSuccess(boolean success) {
         this.success = success;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("data", data)
-                .append("error", error)
+        return new ToStringBuilder(this).append("data", data).append("error", error)
                 .append("success", success).toString();
     }
 

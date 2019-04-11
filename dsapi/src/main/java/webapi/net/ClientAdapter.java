@@ -17,9 +17,9 @@
 package webapi.net;
 
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
-import okhttp3.logging.HttpLoggingInterceptor;
 import webapi.base.ParameterizedCallback;
 
 import javax.net.ssl.*;
@@ -47,6 +47,7 @@ public final class ClientAdapter {
     public ClientAdapter() throws NoSuchAlgorithmException, KeyManagementException {
         setClient(null);
         mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     /**
@@ -141,8 +142,6 @@ public final class ClientAdapter {
                     .connectTimeout(Duration.ofSeconds(10))
                     .readTimeout(Duration.ofSeconds(10))
                     .writeTimeout(Duration.ofSeconds(10))
-                    // todo looging impl
-                    .addInterceptor(new HttpLoggingInterceptor())
                     .sslSocketFactory(getSSLSocketFactory(), getX509TrustManager())
                     .hostnameVerifier((hostname, session) -> true)
                     .build();

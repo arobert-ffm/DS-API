@@ -44,4 +44,21 @@ public interface ApiContract {
 
     // DownloadStation
     String DLS_PARAM_SESSION_VALUE = "DownloadStation";
+
+    // DownloadStation Info
+    String DLS_INFO_CGI = "DownloadStation/info.cgi";
+    String DLS_INFO_API = "SYNO.DownloadStation.Info";
+    String DLS_INFO_VERSION = "1";
+    String DLS_INFO_METHOD_INFO = "getinfo";
+    String DLS_INFO_METHOD_GETCONFIG = "getconfig";
+
+    // DownloadStation DlsTask
+    String DLS_TASK_CGI = "DownloadStation/task.cgi";
+    String DLS_TASK_API = "SYNO.DownloadStation.Task";
+    String DLS_TASK_VERSION = "1";
+    String DLS_TASK_METHOD = "list";
+    String DLS_TASK_PARAM_OFFSET = "offset";
+    String DLS_TASK_PARAM_LIMIT = "limit";
+    String DLS_TASK_PARAM_ADDITIONAL = "additional";
+    String DLS_TASK_PARAM_ADDITIONAL_VALUE = "detail,transfer";
 }

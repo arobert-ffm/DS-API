@@ -38,7 +38,7 @@ public class InfoDataDeserializer extends StdDeserializer<InfoData> {
     }
 
     @Override
-    public InfoData deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public InfoData deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
 
         JsonNode node = parser.getCodec().readTree(parser);
 

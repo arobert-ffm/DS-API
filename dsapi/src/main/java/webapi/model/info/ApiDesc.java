@@ -50,12 +50,13 @@ public class ApiDesc {
     }
 
     /**
+     * @param name
      * @param maxVersion
-     * @param path
      * @param minVersion
+     * @param path
      */
     public ApiDesc(String name, int maxVersion, int minVersion, String path) {
-        this(name, maxVersion, minVersion, path, null);
+        this(name, maxVersion, minVersion, path, "");
     }
 
     public String getName() {

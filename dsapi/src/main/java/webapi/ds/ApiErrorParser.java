@@ -23,6 +23,8 @@ import java.util.Map;
  */
 public final class ApiErrorParser {
 
+    private static final String error = "%d: %s";
+
     private static final Map<Integer, String> commonError = Map.of(
             100, "Unknown error",
             101, "Invalid parameter",
@@ -57,7 +59,8 @@ public final class ApiErrorParser {
      * @return Description or {@code null}
      */
     public static String parseCommonError(int code) {
-        return commonError.get(code);
+        String desc = commonError.get(code);
+        return desc == null ? null : String.format(error, code, desc);
     }
 
     /**
@@ -67,6 +70,7 @@ public final class ApiErrorParser {
      * @return Description or {@code null}
      */
     public static String parseAuthError(int code) {
-        return authError.get(code);
+        String desc = authError.get(code);
+        return desc == null ? null : String.format(error, code, desc);
     }
 }

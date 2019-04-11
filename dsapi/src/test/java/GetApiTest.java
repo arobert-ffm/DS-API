@@ -18,19 +18,19 @@ import webapi.DlsApi;
 import webapi.WebApi;
 import webapi.ds.ApiContract;
 import webapi.ds.ApiException;
-import webapi.model.info.ApiDesc;
+import webapi.model.dls.DlsConfig;
+import webapi.model.dls.DlsInfo;
+import webapi.model.dls.DlsTaskList;
 import webapi.net.AsyncCallback;
 import webapi.net.ClientException;
 
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 /**
- * Base WebApi Test
+ * Get Api Test
  */
-public class BaseApiTest {
+public class GetApiTest {
 
     /**
      * @param args 0: HOST
@@ -39,15 +39,15 @@ public class BaseApiTest {
      *             3: USER
      *             4: PW
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException, IOException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException {
         String port = (args[1].equals("null") ? null : args[1]);
         WebApi api = new WebApi(args[0], port, Boolean.parseBoolean(args[2]));
         DlsApi dlsApi = api.getDlsApi();
 
-        // INFO
+        String sid = null;
         try {
-            List<ApiDesc> apiList = dlsApi.apiInfo();
-            System.out.println("Api count:\t" + apiList.size());
+            sid = dlsApi.login(args[3], args[4], ApiContract.DLS_PARAM_SESSION_VALUE);
+            System.out.println("_sid:\t" + sid);
         } catch (ClientException e) {
             System.out.println(e.getCode().getDesc());
             e.printStackTrace();
@@ -55,7 +55,31 @@ public class BaseApiTest {
             System.out.println(e.getDesc());
             e.printStackTrace();
         }
-        dlsApi.apiInfo(new AsyncCallback<>() {
+
+        // INFO
+        testInfo(dlsApi, sid);
+
+        // CONFIG
+        testConfig(dlsApi, sid);
+
+        // LIST
+        testList(dlsApi, sid);
+    }
+
+    private static void testInfo(DlsApi dlsApi, String sid) {
+        DlsInfo dlsInfo = null;
+        try {
+            dlsInfo = dlsApi.getInfo(sid);
+            System.out.println(dlsInfo);
+        } catch (ClientException e) {
+            System.out.println(e.getCode().getDesc());
+            e.printStackTrace();
+        } catch (ApiException e) {
+            System.out.println(e.getDesc());
+            e.printStackTrace();
+        }
+
+        dlsApi.getInfo(sid, new AsyncCallback<>() {
             @Override
             public void onFailure(Exception e) {
                 if (e instanceof ClientException) {
@@ -67,17 +91,16 @@ public class BaseApiTest {
             }
 
             @Override
-            public void onResponse(List<ApiDesc> response) {
-                System.out.println("Api count:\t" + response.size() + " (Async)");
+            public void onResponse(DlsInfo response) {
+                System.out.println(response + " (Async)");
             }
         });
+    }
 
-        // LOGIN & LOGOUT
+    private static void testConfig(DlsApi dlsApi, String sid) {
         try {
-            String sid = dlsApi.login(args[3], args[4], ApiContract.DLS_PARAM_SESSION_VALUE);
-            System.out.println("_sid:\t" + sid);
-            boolean logout = dlsApi.logout(ApiContract.DLS_PARAM_SESSION_VALUE);
-            System.out.println("Logout successful:\t" + logout);
+            DlsConfig dlsConfig = dlsApi.getConfig(sid);
+            System.out.println(dlsConfig);
         } catch (ClientException e) {
             System.out.println(e.getCode().getDesc());
             e.printStackTrace();
@@ -85,7 +108,8 @@ public class BaseApiTest {
             System.out.println(e.getDesc());
             e.printStackTrace();
         }
-        dlsApi.login(args[3], args[4], ApiContract.DLS_PARAM_SESSION_VALUE, new AsyncCallback<>() {
+
+        dlsApi.getConfig(sid, new AsyncCallback<>() {
             @Override
             public void onFailure(Exception e) {
                 if (e instanceof ClientException) {
@@ -97,9 +121,42 @@ public class BaseApiTest {
             }
 
             @Override
-            public void onResponse(String response) {
-                System.out.println("_sid:\t" + response + " (Async)");
-                dlsApi.logout(ApiContract.DLS_PARAM_SESSION_VALUE, new AsyncCallback<>() {
+            public void onResponse(DlsConfig response) {
+                System.out.println(response + " (Async)");
+            }
+        });
+    }
+
+    private static void testList(DlsApi dlsApi, String sid) {
+        try {
+            DlsTaskList taskList = dlsApi.getTasks(sid, null, null);
+            System.out.println(taskList);
+            taskList = dlsApi.getTasks(sid, "1", "2");
+            System.out.println(taskList);
+        } catch (ClientException e) {
+            System.out.println(e.getCode().getDesc());
+            e.printStackTrace();
+        } catch (ApiException e) {
+            System.out.println(e.getDesc());
+            e.printStackTrace();
+        }
+
+        final String finalSid = sid;
+        dlsApi.getTasks(sid, null, null, new AsyncCallback<>() {
+            @Override
+            public void onFailure(Exception e) {
+                if (e instanceof ClientException) {
+                    System.out.println(((ClientException) e).getCode().getDesc());
+                } else if (e instanceof ApiException) {
+                    System.out.println(((ApiException) e).getDesc());
+                }
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(DlsTaskList response) {
+                System.out.println(response + " (Async)");
+                dlsApi.getTasks(finalSid, "1", "2", new AsyncCallback<>() {
                     @Override
                     public void onFailure(Exception e) {
                         if (e instanceof ClientException) {
@@ -111,14 +168,12 @@ public class BaseApiTest {
                     }
 
                     @Override
-                    public void onResponse(Void response) {
-                        System.out.println("Logout successful! (Async)");
+                    public void onResponse(DlsTaskList response) {
+                        System.out.println(response + " (Async)");
                     }
                 });
             }
         });
-
-//        api.getDlsApi().getHttpClient().close();
     }
 
 }

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UriAdapterTest {
 
-    private String IP = "192.167.178.80";
+    private String IP = "192.163.171.80";
     private String cgiPath = "myCgi";
     private String apiName = "myApiNAme";
     private String version = "myVersion";
@@ -66,7 +66,7 @@ class UriAdapterTest {
 
     @Test
     void getUriWithoutSidParams() {
-        String outputUri = "http://192.167.178.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod";
+        String outputUri = "http://192.163.171.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod";
         UriAdapter uriAdapter = new UriAdapter(IP, null, false);
         String uri = uriAdapter.getUri(cgiPath, apiName, version, method);
         assertEquals(outputUri, uri);
@@ -74,7 +74,7 @@ class UriAdapterTest {
 
     @Test
     void getUriWithoutParams() {
-        String outputUri = "http://192.167.178.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&_sid=mySid";
+        String outputUri = "http://192.163.171.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&_sid=mySid";
         UriAdapter uriAdapter = new UriAdapter(IP, null, false);
         String uri = uriAdapter.getUri(cgiPath, apiName, version, method, sid);
         assertEquals(outputUri, uri);
@@ -82,7 +82,7 @@ class UriAdapterTest {
 
     @Test
     void getUriWithoutSid() {
-        String outputUri = "http://192.167.178.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&TestParam=TestValue";
+        String outputUri = "http://192.163.171.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&TestParam=TestValue";
         UriAdapter uriAdapter = new UriAdapter(IP, null, false);
         String uri = uriAdapter.getUri(cgiPath, apiName, version, method, params);
         assertEquals(outputUri, uri);
@@ -90,7 +90,7 @@ class UriAdapterTest {
 
     @Test
     void getUri() {
-        String outputUri = "http://192.167.178.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&_sid=mySid&TestParam=TestValue";
+        String outputUri = "http://192.163.171.80:5000/webapi/myCgi?api=myApiNAme&version=myVersion&method=myMethod&_sid=mySid&TestParam=TestValue";
         UriAdapter uriAdapter = new UriAdapter(IP, null, false);
         String uri = uriAdapter.getUri(cgiPath, apiName, version, method, sid, params);
         assertEquals(outputUri, uri);

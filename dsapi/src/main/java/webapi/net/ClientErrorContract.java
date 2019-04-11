@@ -25,13 +25,13 @@ public enum ClientErrorContract {
     RESPONSE_NOT_SUCCESSFUL("The http code is not in the interval [200,300)"),
     RESPONSE_PARSE("An error occurred while parsing the http response");
 
-    private final String errorDesc;
+    private final String desc;
 
-    ClientErrorContract(String errorDesc) {
-        this.errorDesc = errorDesc;
+    ClientErrorContract(String desc) {
+        this.desc = desc;
     }
 
-    public String getErrorDesc() {
-        return errorDesc;
+    public String getDesc() {
+        return desc;
     }
 }

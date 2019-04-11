@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package webapi.model.auth;
+package webapi.model.dls;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import webapi.model.ApiError;
 
 
-public class LoginResponse {
+public class DlsInfoResponse {
 
-    private LoginData data;
+    private DlsInfo data;
     private ApiError error;
     private boolean success;
 
     /**
      * No args constructor for use in serialization
      */
-    public LoginResponse() {
+    public DlsInfoResponse() {
     }
 
     /**
@@ -37,18 +37,18 @@ public class LoginResponse {
      * @param error
      * @param success
      */
-    public LoginResponse(LoginData data, ApiError error, boolean success) {
+    public DlsInfoResponse(DlsInfo data, ApiError error, boolean success) {
         super();
         this.data = data;
         this.error = error;
         this.success = success;
     }
 
-    public LoginData getData() {
+    public DlsInfo getData() {
         return data;
     }
 
-    public void setData(LoginData data) {
+    public void setData(DlsInfo data) {
         this.data = data;
     }
 
@@ -70,8 +70,7 @@ public class LoginResponse {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("data", data)
-                .append("error", error)
+        return new ToStringBuilder(this).append("data", data).append("error", error)
                 .append("success", success).toString();
     }
 

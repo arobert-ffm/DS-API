@@ -16,23 +16,24 @@
 
 package webapi;
 
-import webapi.net.UriAdapter;
 import webapi.net.ClientAdapter;
+import webapi.net.UriAdapter;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * Assists in initialization of the Web Api.
+ * todo Add toString method with ToStringStyle as param
  * todo add 2-step verification
- * todo log4j (Okhttp http://square.github.io/okhttp/3.x/logging-interceptor/)
+ * todo login format add cookie as option
  */
 public final class WebApi {
 
     private UriAdapter uriAdapter;
     private ClientAdapter httpClient;
 
-    private GetApi getApi;
+    private DlsApi dlsApi;
 
 
     /**
@@ -48,7 +49,7 @@ public final class WebApi {
         uriAdapter = new UriAdapter(host, port, ssl);
         httpClient = new ClientAdapter();
 
-        getApi = new GetApi(uriAdapter, httpClient);
+        dlsApi = new DlsApi(uriAdapter, httpClient);
     }
 
     public UriAdapter getUriAdapter() {
@@ -67,7 +68,7 @@ public final class WebApi {
         this.httpClient = httpClient;
     }
 
-    public GetApi getGetApi() {
-        return getApi;
+    public DlsApi getDlsApi() {
+        return dlsApi;
     }
 }
